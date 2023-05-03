@@ -1,10 +1,28 @@
-import { ReactNode, useState, useCallback, createContext } from 'react'
+import { ReactNode, useState, createContext } from 'react'
 import { api } from '../pages/api'
 import { useQuery } from 'react-query'
 import { queryClient } from '../lib/queryClient'
 
+interface ReactionsProps {
+  total_count: number
+  confused: number
+  eyes: number
+  heart: number
+  hooray: number
+  laugh: number
+  rocket: number
+}
+
 interface Issues {
-  query: string
+  id: number
+  title: string
+  body: string
+  created_at: Date
+  comments: number
+  comments_url: string
+  repository_url: string
+  url: string
+  reactions: ReactionsProps
 }
 
 interface IssueContextType {
@@ -29,14 +47,14 @@ export function IssueProvider({ children }: IssueProviderProps) {
     refetch()
   }
 
-  const { isLoading, error, refetch } = useQuery(
+  const { refetch } = useQuery(
     'issue-query',
     async () => {
       const response = await api.get(
         `/search/issues?q=${query}%20repo:macsueldias/github-blog`,
       )
       const data = await response.data
-      return await data
+      return await data.items
     },
     {
       onSuccess(data) {
@@ -46,10 +64,6 @@ export function IssueProvider({ children }: IssueProviderProps) {
   )
 
   console.log(issues)
-
-  //   useEffect(() => {
-  //     fetchIssue()
-  //   }, [fetchIssue])
 
   return (
     <IssueContext.Provider value={{ issues, fetchIssue }}>

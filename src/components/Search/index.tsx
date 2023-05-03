@@ -11,7 +11,11 @@ const publicationFormSchema = z.object({
 
 type PublicationFormData = z.infer<typeof publicationFormSchema>
 
-export const Search = () => {
+interface SearchProps {
+  amountIssue: number
+}
+
+export const Search = ({ amountIssue }: SearchProps) => {
   const { fetchIssue } = useContext(IssueContext)
 
   const { register, handleSubmit } = useForm<PublicationFormData>({
@@ -26,7 +30,9 @@ export const Search = () => {
     <ContainerSearch>
       <TitlePublicacion>
         <h2>Publicações</h2>
-        <span>6 publicações</span>
+        <span>
+          {amountIssue} {amountIssue > 1 ? 'publicações' : 'publicação'}
+        </span>
       </TitlePublicacion>
       <Form onSubmit={handleSubmit(handleSearchPublication)}>
         <Input
