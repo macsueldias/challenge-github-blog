@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 
 export const GlobalStyle = createGlobalStyle`
     * {
@@ -22,4 +22,20 @@ export const GlobalStyle = createGlobalStyle`
         font-weight: 400;
         font-size: 1rem;
     }
+`
+
+export const GroupListSocial = styled.ul`
+  display: flex;
+  gap: 1.25rem;
+  color: ${(props) => props.theme['base-subtitle']};
+`
+
+export const ItemSocial = styled.li`
+  display: flex;
+  gap: 0.5rem;
+
+  img {
+    height: 1.1rem;
+    width: 1.1rem;
+  }
 `

@@ -6,6 +6,9 @@ export const LayoutContainer = styled.div`
   align-items: center;
   justify-content: start;
   height: 100vh;
-  width: 100vw;
-  margin: auto;
+`
+
+export const ContentLayout = styled.div`
+  max-width: 54rem;
+  width: 100%;
 `

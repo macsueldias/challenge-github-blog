@@ -1,14 +1,39 @@
-import { ContainerSearch, Form, Input } from './styles'
+import { z } from 'zod'
+import { ContainerSearch, Form, Input, TitlePublicacion } from './styles'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { IssueContext } from '../../context/IssueContext'
+import { useContext } from 'react'
+
+const publicationFormSchema = z.object({
+  query: z.string(),
+})
+
+type PublicationFormData = z.infer<typeof publicationFormSchema>
 
 export const Search = () => {
+  const { fetchIssue } = useContext(IssueContext)
+
+  const { register, handleSubmit } = useForm<PublicationFormData>({
+    resolver: zodResolver(publicationFormSchema),
+  })
+
+  async function handleSearchPublication(data: PublicationFormData) {
+    await fetchIssue(data.query)
+  }
+
   return (
     <ContainerSearch>
-      <div>
-        <h1>Publicações</h1>
+      <TitlePublicacion>
+        <h2>Publicações</h2>
         <span>6 publicações</span>
-      </div>
-      <Form>
-        <Input type="text" placeholder="Buscar conteúdo" />
+      </TitlePublicacion>
+      <Form onSubmit={handleSubmit(handleSearchPublication)}>
+        <Input
+          type="text"
+          placeholder="Buscar conteúdo"
+          {...register('query')}
+        />
       </Form>
     </ContainerSearch>
   )
