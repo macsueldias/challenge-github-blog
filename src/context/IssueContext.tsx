@@ -1,7 +1,11 @@
-import { ReactNode, useState, createContext } from 'react'
+import {
+  ReactNode,
+  useState,
+  createContext,
+  useEffect,
+  useCallback,
+} from 'react'
 import { api } from '../pages/api'
-import { useQuery } from 'react-query'
-import { queryClient } from '../lib/queryClient'
 
 interface ReactionsProps {
   total_count: number
@@ -13,6 +17,10 @@ interface ReactionsProps {
   rocket: number
 }
 
+interface UserProps {
+  login: string
+}
+
 interface Issues {
   id: number
   title: string
@@ -22,6 +30,7 @@ interface Issues {
   comments_url: string
   repository_url: string
   url: string
+  user: UserProps
   reactions: ReactionsProps
 }
 
@@ -38,32 +47,25 @@ export const IssueContext = createContext({} as IssueContextType)
 
 export function IssueProvider({ children }: IssueProviderProps) {
   const [issues, setIssues] = useState<Issues[]>([])
-  const [query, setQuery] = useState('')
 
-  function fetchIssue(query: string) {
-    const formatQuery = query.replace(/\s+/g, '%20')
-    setQuery(formatQuery)
-    queryClient.invalidateQueries('issue-query')
-    refetch()
-  }
+  const fetchIssue = useCallback(async (query: string) => {
+    const response = await api.get(
+      `/search/issues?q=${query}%20repo:macsueldias/github-blog`,
+      // {
+      //   params: {
+      //     _sort: 'createdAt',
+      //     _order: 'desc',
+      //     q: query,
+      //   },
+      // },
+    )
+    const data = await response.data
+    setIssues(data.items)
+  }, [])
 
-  const { refetch } = useQuery(
-    'issue-query',
-    async () => {
-      const response = await api.get(
-        `/search/issues?q=${query}%20repo:macsueldias/github-blog`,
-      )
-      const data = await response.data
-      return await data.items
-    },
-    {
-      onSuccess(data) {
-        setIssues(data)
-      },
-    },
-  )
-
-  console.log(issues)
+  useEffect(() => {
+    fetchIssue('')
+  }, [fetchIssue])
 
   return (
     <IssueContext.Provider value={{ issues, fetchIssue }}>

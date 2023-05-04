@@ -1,11 +1,13 @@
 /* eslint-disable camelcase */
 /* eslint-disable react/no-children-prop */
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { PostInfo } from './components/PostInfo'
 import { ContainerPost, GroupReactions, ReactItem, Rections } from './styles'
 import remarkGfm from 'remark-gfm'
 import { useQuery } from 'react-query'
 import { api } from '../api'
+import { useParams } from 'react-router-dom'
+import { IssueContext } from '../../context/IssueContext'
 
 interface UserProps {
   avatar_url: string
@@ -35,46 +37,23 @@ interface IssuesProps {
 }
 
 export const Post = () => {
-  const [infoIssue, setInfoIssue] = useState<IssuesProps>({} as IssuesProps)
-  const [issue, setIssue] = useState('')
+  const [infoUser, setInfoUser] = useState<IssuesProps>({} as IssuesProps)
+
+  const { id } = useParams()
+
+  const { issues } = useContext(IssueContext)
+  const issueCurrent = issues.filter((issue) => issue.id === Number(id))[0]
 
   const { isLoading, error } = useQuery(
-    'issue',
+    `issue-${id}`,
     async () => {
-      const response = await api.get(
-        `search/issues?q=Assets%20Not%20Loaded%20with%20Backend%20Integration%20repo:macsueldias/github-blog`,
-      )
-      const data = await response.data.items[0]
-      return data
+      const response = await api.get(`users/${issueCurrent.user.login}`)
+      const data = await response.data
+      console.log(data)
     },
     {
       onSuccess(data) {
-        const {
-          author_association,
-          body,
-          comments,
-          comments_url,
-          created_at,
-          url,
-          state,
-          title,
-          reactions,
-          user,
-        } = data
-
-        setInfoIssue({
-          author_association,
-          body,
-          comments,
-          comments_url,
-          created_at,
-          url,
-          state,
-          title,
-          reactions,
-          user,
-        })
-        setIssue(body)
+        // setInfoUser(data)
       },
     },
   )
@@ -87,8 +66,8 @@ export const Post = () => {
         <p>Error...</p>
       ) : (
         <>
-          <PostInfo {...infoIssue} />
-          <Rections>
+          {/* <PostInfo {...infoUser} /> */}
+          {/* <Rections>
             <GroupReactions>
               {infoIssue.reactions.eyes > 0 && (
                 <ReactItem>
@@ -121,9 +100,9 @@ export const Post = () => {
                 </ReactItem>
               )}
             </GroupReactions>
-          </Rections>
+          </Rections> */}
           <ContainerPost remarkPlugins={[[remarkGfm, { singleTilde: false }]]}>
-            {issue}
+            {issueCurrent.body}
           </ContainerPost>
         </>
       )}

@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IssueContext } from '../../context/IssueContext'
 import { useContext } from 'react'
+import { queryClient } from '../../lib/queryClient'
 
 const publicationFormSchema = z.object({
   query: z.string(),
@@ -24,6 +25,7 @@ export const Search = ({ amountIssue }: SearchProps) => {
 
   async function handleSearchPublication(data: PublicationFormData) {
     await fetchIssue(data.query)
+    queryClient.invalidateQueries('issue-query')
   }
 
   return (

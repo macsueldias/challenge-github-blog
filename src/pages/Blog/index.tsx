@@ -11,6 +11,7 @@ import {
   DescriptionPost,
 } from './styles'
 import { IssueContext } from '../../context/IssueContext'
+import { NavLink } from 'react-router-dom'
 
 export const Blog = () => {
   const { issues } = useContext(IssueContext)
@@ -24,17 +25,19 @@ export const Blog = () => {
         <Posts>
           {issues.map((issue) => {
             return (
-              <Post key={issue.id}>
-                <TitlePost>
-                  <h3>{issue.title}</h3>
-                  <span>Há 1 dia</span>
-                </TitlePost>
-                <DescriptionPost>
-                  <ReactMarkdown>
-                    {`${issue.body.substring(0, MAX_LENGTH)}...`}
-                  </ReactMarkdown>
-                </DescriptionPost>
-              </Post>
+              <NavLink to={`/post/${issue.id}`} key={issue.id}>
+                <Post>
+                  <TitlePost>
+                    <h3>{issue.title}</h3>
+                    <span>Há 1 dia</span>
+                  </TitlePost>
+                  <DescriptionPost>
+                    <ReactMarkdown>
+                      {`${issue.body.substring(0, MAX_LENGTH)}...`}
+                    </ReactMarkdown>
+                  </DescriptionPost>
+                </Post>
+              </NavLink>
             )
           })}
         </Posts>
