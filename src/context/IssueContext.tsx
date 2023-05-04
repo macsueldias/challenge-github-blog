@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import {
   ReactNode,
   useState,
@@ -34,8 +35,19 @@ interface Issues {
   reactions: ReactionsProps
 }
 
+interface ProfileProps {
+  name: string
+  bio: string
+  avatar_url: string
+  company: string
+  following: number
+  html_url: string
+  public_repos: number
+}
+
 interface IssueContextType {
   issues: Issues[]
+  profile: ProfileProps
   fetchIssue: (query: string) => void
 }
 
@@ -46,29 +58,48 @@ interface IssueProviderProps {
 export const IssueContext = createContext({} as IssueContextType)
 
 export function IssueProvider({ children }: IssueProviderProps) {
+  const [profile, setProfile] = useState<ProfileProps>({} as ProfileProps)
   const [issues, setIssues] = useState<Issues[]>([])
 
   const fetchIssue = useCallback(async (query: string) => {
     const response = await api.get(
       `/search/issues?q=${query}%20repo:macsueldias/github-blog`,
-      // {
-      //   params: {
-      //     _sort: 'createdAt',
-      //     _order: 'desc',
-      //     q: query,
-      //   },
-      // },
     )
     const data = await response.data
     setIssues(data.items)
   }, [])
 
+  const fetchProfile = async () => {
+    const response = await api.get(`users/macsueldias`)
+    const data = await response.data
+
+    const {
+      name,
+      bio,
+      avatar_url,
+      company,
+      following,
+      html_url,
+      public_repos,
+    } = data
+    setProfile({
+      name,
+      bio,
+      avatar_url,
+      company,
+      following,
+      html_url,
+      public_repos,
+    })
+  }
+
   useEffect(() => {
     fetchIssue('')
+    fetchProfile()
   }, [fetchIssue])
 
   return (
-    <IssueContext.Provider value={{ issues, fetchIssue }}>
+    <IssueContext.Provider value={{ profile, issues, fetchIssue }}>
       {children}
     </IssueContext.Provider>
   )

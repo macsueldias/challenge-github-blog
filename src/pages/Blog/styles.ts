@@ -9,10 +9,15 @@ export const Posts = styled.main`
   flex-wrap: wrap;
   gap: 2rem;
   margin-block: 3rem;
+
+  a {
+    text-decoration: none;
+  }
 `
 
 export const Post = styled.div`
   max-width: 26rem;
+  height: 20rem;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;

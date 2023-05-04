@@ -25,19 +25,21 @@ export const Blog = () => {
         <Posts>
           {issues.map((issue) => {
             return (
-              <NavLink to={`/post/${issue.id}`} key={issue.id}>
-                <Post>
-                  <TitlePost>
-                    <h3>{issue.title}</h3>
-                    <span>Há 1 dia</span>
-                  </TitlePost>
-                  <DescriptionPost>
-                    <ReactMarkdown>
-                      {`${issue.body.substring(0, MAX_LENGTH)}...`}
-                    </ReactMarkdown>
-                  </DescriptionPost>
-                </Post>
-              </NavLink>
+              <span key={issue.id}>
+                <NavLink to={`/post/${issue.id}`}>
+                  <Post>
+                    <TitlePost>
+                      <h3>{issue.title}</h3>
+                      <span>Há 1 dia</span>
+                    </TitlePost>
+                    <DescriptionPost>
+                      <ReactMarkdown>
+                        {`${issue.body.substring(0, MAX_LENGTH)}...`}
+                      </ReactMarkdown>
+                    </DescriptionPost>
+                  </Post>
+                </NavLink>
+              </span>
             )
           })}
         </Posts>

@@ -2,59 +2,40 @@ import { NavLink } from 'react-router-dom'
 import { InfoContainer, TitleInfoPost } from './styles'
 import { ArrowSquareOut, CaretLeft } from '@phosphor-icons/react'
 import { GroupListSocial, ItemSocial } from '../../../../styles/global'
+import { useContext } from 'react'
+import { IssueContext } from '../../../../context/IssueContext'
 
-interface UserProps {
-  avatar_url: string
-  login: string
-}
-
-interface ReactionsProps {
-  confused: number
-  heart: number
-  hooray: number
-  laugh: number
-  rocket: number
-  eyes: number
-}
-
-interface IssuesProps {
-  author_association: string
-  body: string
-  comments: number
-  comments_url: string
-  created_at: string
-  url: string
-  state: string
+interface PostInfoProps {
   title: string
-  reactions: ReactionsProps
-  user: UserProps
 }
 
-export const PostInfo = (infoIssue: IssuesProps) => {
+export const PostInfo = ({ title }: PostInfoProps) => {
+  const { profile } = useContext(IssueContext)
+
   return (
     <InfoContainer>
       <nav>
         <NavLink to="/blog">
           <CaretLeft size={16} weight="bold" /> VOLTAR
         </NavLink>
-        <NavLink to="https://github.com/macsueldias">
+        <NavLink to={profile.html_url}>
           VER NO GITHUB{' '}
           <ArrowSquareOut size={16} style={{ fontWeight: 'bold' }} />
         </NavLink>
       </nav>
-      <TitleInfoPost>{infoIssue.title}</TitleInfoPost>
+      <TitleInfoPost>{title}</TitleInfoPost>
       <GroupListSocial>
         <ItemSocial>
           <img src="../../../src/assets/icons/github.svg" alt="Github" />
-          {infoIssue.user.login}
+          {profile.name}
         </ItemSocial>
         <ItemSocial>
           <img src="../../../src/assets/icons/building.svg" alt="Build" />
-          TBRWEB
+          {profile.company}
         </ItemSocial>
         <ItemSocial>
           <img src="../../../src/assets/icons/user-group.svg" alt="Users" />7
-          seguidores
+          {profile.following} seguidores
         </ItemSocial>
       </GroupListSocial>
     </InfoContainer>
